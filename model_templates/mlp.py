@@ -5,7 +5,7 @@ import torch.onnx
 import argparse
 argParser = argparse.ArgumentParser()
 argParser.add_argument("-i", "--input", help="input size")
-argParser.add_argument("-h", "--hidden", help="hidden size")
+argParser.add_argument("-hd", "--hidden", help="hidden size")
 argParser.add_argument("-o", "--output", help="output size")
 
 # Define a simple two-layered MLP
@@ -22,13 +22,12 @@ class SimpleMLP(nn.Module):
         x = self.fc2(x)
         return x
     
-def main():
-    args = argParser.parse_args()
-
+def main(args):
+    print(args)
     # Instantiate the model
-    input_size = args.i or 10
-    h_size = args.h or 5
-    output_size = args.o or 1
+    input_size = args.input or 10
+    h_size = args.hidden or 5
+    output_size = args.output or 1
     model = SimpleMLP(input_size, h_size, output_size)
     model.eval()
 
@@ -36,4 +35,9 @@ def main():
     x = torch.randn(1, input_size)
 
     # Export the model to ONNX
-    torch.onnx.export(model, x, f"../onnx_saved/mlp_{input_size}_{h_size}_{output_size}.onnx")
+    torch.onnx.export(model, x, f"./onnx_saved/mlp_{input_size}_{h_size}_{output_size}.onnx")
+    print("done")
+
+if __name__ == "__main__":
+    args = argParser.parse_args()
+    main(args)
